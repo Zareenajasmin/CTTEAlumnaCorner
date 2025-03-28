@@ -1,6 +1,6 @@
 import express from 'express';
 import session from 'express-session';
-
+import path from 'path';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRoutes from './routes/user.route.js';
@@ -20,6 +20,8 @@ mongoose
    .catch(err =>{
     console.log(err);
    });
+
+   const __dirname = path.resolve();
 const app=express();
 
 app.use(session({
@@ -37,6 +39,11 @@ app.use('/api/user',userRoutes);
 app.use('/api/auth',authRoutes);
 app.use('/api/post',postRoutes);
 app.use('/api/comment', commentRoutes);
+
+app.use(express.static(path.join( __dirname, '/client/dist')));
+app.get('*',(req,res) =>{
+  res.sendFile(path.join (__dirname, 'client', 'dist', 'index.html'));
+});
 
 
 app.use((err, req, res, next) => {
